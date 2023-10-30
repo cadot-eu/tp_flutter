@@ -8,6 +8,7 @@ import '../Validators/password_validator.dart';
 import '../helpers/database_helper.dart';
 
 import '../styles/login.dart';
+import 'decorations/field_decoration.dart';
 
 class RegisterScreen extends StatefulWidget {
   const RegisterScreen({super.key});
@@ -23,6 +24,11 @@ class _RegisterScreenState extends State<RegisterScreen> {
   final repeatPasswordController = TextEditingController();
   final firstNameController = TextEditingController();
   final lastNameController = TextEditingController();
+
+  Icon? suffixicon;
+
+  final errorIcon = const Icon(Icons.error);
+  final doneIcon = const Icon(Icons.done);
 
   @override
   void dispose() {
@@ -49,78 +55,118 @@ class _RegisterScreenState extends State<RegisterScreen> {
               children: [
                 const Text('Registration', style: titreStyle),
                 TextFormField(
+                  keyboardType: TextInputType.emailAddress,
                   validator: (value) {
                     final email = EmailValidator().validate(value);
                     if (email != true) {
+                      setState(() {
+                        suffixicon = errorIcon;
+                      });
                       return email;
                     }
+                    setState(() {
+                      suffixicon = doneIcon;
+                    });
                     return null;
                   },
                   controller: emailController,
-                  decoration: const InputDecoration(
-                    border: UnderlineInputBorder(),
+                  decoration: TextFieldDecoration.fieldDecoration(
+                    suffixicon: suffixicon,
+                    prefixIcon: const Icon(Icons.email),
                     labelText: 'Email',
-                    labelStyle: fieldStyle,
+                    hintText: 'Enter your email',
                   ),
                 ),
                 TextFormField(
+                  obscureText: true,
                   validator: (value) {
                     final password = PasswordValidator()
                         .validate(value, repeatPasswordController.text);
                     if (password != true) {
+                      setState(() {
+                        suffixicon = errorIcon;
+                      });
                       return password;
                     }
+                    setState(() {
+                      suffixicon = doneIcon;
+                    });
                     return null;
                   },
                   controller: passwordController,
-                  decoration: const InputDecoration(
-                    border: UnderlineInputBorder(),
+                  decoration: TextFieldDecoration.fieldDecoration(
+                    suffixicon: suffixicon,
+                    prefixIcon: const Icon(Icons.password),
                     labelText: 'Password',
-                    labelStyle: passwordStyle,
+                    hintText: '8 characters and one letter and one number',
+                    style: passwordStyle,
                   ),
                 ),
                 TextFormField(
+                  obscureText: true,
                   validator: (value) {
                     if (value == null || value.isEmpty) {
+                      setState(() {
+                        suffixicon = errorIcon;
+                      });
                       return 'Please fill this field';
                     }
+                    setState(() {
+                      suffixicon = doneIcon;
+                    });
                     return null;
                   },
                   controller: repeatPasswordController,
-                  decoration: const InputDecoration(
-                    border: UnderlineInputBorder(),
+                  decoration: TextFieldDecoration.fieldDecoration(
+                    suffixicon: suffixicon,
+                    prefixIcon: const Icon(Icons.password),
                     labelText: 'Repeat Password',
-                    labelStyle: passwordStyle,
+                    hintText: '8 characters and one letter and one number',
+                    style: passwordStyle,
                   ),
                 ),
                 TextFormField(
+                  keyboardType: TextInputType.name,
                   validator: (value) {
                     final name = NameValidator().validate(value);
                     if (name != true) {
+                      setState(() {
+                        suffixicon = errorIcon;
+                      });
                       return name;
                     }
+                    setState(() {
+                      suffixicon = doneIcon;
+                    });
                     return null;
                   },
                   controller: firstNameController,
-                  decoration: const InputDecoration(
-                    border: UnderlineInputBorder(),
+                  decoration: TextFieldDecoration.fieldDecoration(
+                    suffixicon: suffixicon,
+                    prefixIcon: const Icon(Icons.person),
                     labelText: 'First Name',
-                    labelStyle: fieldStyle,
                   ),
                 ),
                 TextFormField(
+                  keyboardType: TextInputType.name,
                   validator: (value) {
                     final name = NameValidator().validate(value);
                     if (name != true) {
+                      setState(() {
+                        suffixicon = errorIcon;
+                      });
                       return name;
                     }
+                    setState(() {
+                      suffixicon = doneIcon;
+                    });
                     return null;
                   },
                   controller: lastNameController,
-                  decoration: const InputDecoration(
-                    border: UnderlineInputBorder(),
+                  decoration: TextFieldDecoration.fieldDecoration(
+                    suffixicon: suffixicon,
+                    prefixIcon: const Icon(Icons.person),
                     labelText: 'Last Name',
-                    labelStyle: fieldStyle,
                   ),
                 ),
                 ElevatedButton(
