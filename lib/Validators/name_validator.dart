@@ -1,7 +1,9 @@
+import '../texts.dart';
+
 class NameValidator {
   dynamic validate(String? name) {
     if (name == null || name.isEmpty) {
-      return 'Please fill this field';
+      return fieldHint;
     }
     if (name.length < 3) {
       return true;

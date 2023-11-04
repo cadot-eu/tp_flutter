@@ -8,6 +8,7 @@ import '../Validators/password_validator.dart';
 import '../helpers/database_helper.dart';
 
 import '../styles/login.dart';
+import '../texts.dart';
 import 'decorations/field_decoration.dart';
 
 class RegisterScreen extends StatefulWidget {
@@ -109,7 +110,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
                       setState(() {
                         suffixicon = errorIcon;
                       });
-                      return 'Please fill this field';
+                      return fieldHint;
                     }
                     setState(() {
                       suffixicon = doneIcon;
@@ -121,7 +122,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
                     suffixicon: suffixicon,
                     prefixIcon: const Icon(Icons.password),
                     labelText: 'Repeat Password',
-                    hintText: '8 characters and one letter and one number',
+                    hintText: passwordHint,
                     style: passwordStyle,
                   ),
                 ),
@@ -172,11 +173,24 @@ class _RegisterScreenState extends State<RegisterScreen> {
                 ElevatedButton(
                   onPressed: () {
                     if (_formKey.currentState!.validate()) {
-                      ScaffoldMessenger.of(context).showSnackBar(
-                          const SnackBar(content: Text('Hello .')));
-                    } else {
-                      // The form has some validation errors.
-                      // Do Something...
+                      //on enregistre les données dans la base et on affiche un message
+                      final db = DatabaseHelper();
+                      db
+                          .saveToDatabase(
+                              emailController.text,
+                              passwordController.text,
+                              firstNameController.text,
+                              lastNameController.text)
+                          .then((value) => ScaffoldMessenger.of(context)
+                                  .showSnackBar(const SnackBar(
+                                      content: Text(
+                                'Registered successfully',
+                              ))))
+                          .catchError((error) => ScaffoldMessenger.of(context)
+                                  .showSnackBar(const SnackBar(
+                                      content: Text(
+                                'Error',
+                              ))));
                     }
                   },
                   child: const Text('Register'),
