@@ -1,3 +1,4 @@
+import 'package:path/path.dart';
 import 'package:sqflite/sqflite.dart';
 
 class DatabaseHelper {
@@ -10,29 +11,69 @@ class DatabaseHelper {
   DatabaseHelper._internal();
 
   Future<Database> get database async {
-    if (_database != null) return _database!;
+    if (_database != null) {
+      return _database!;
+    }
 
     _database = await _initDatabase();
     return _database!;
   }
 
   Future<Database> _initDatabase() async {
-    return database;
+    final db = await openDatabase('my_database.db');
+    await db.execute(
+      'CREATE TABLE IF NOT EXISTS users(id INTEGER PRIMARY KEY AUTOINCREMENT, email TEXT, password TEXT, firstName TEXT, lastName TEXT)',
+    );
+    return db;
   }
 
-  Future<void> saveToDatabase(
-      String email, String password, String firstName, String lastName) async {
+  Future<int> insertUser(Map<String, dynamic> user) async {
     final db = await database;
+    return await db.insert('users', user);
+  }
 
-    await db.insert(
+  Future<int> updateUser(Map<String, dynamic> user) async {
+    final db = await database;
+    return await db.update(
       'users',
-      {
-        'email': email,
-        'password': password,
-        'firstName': firstName,
-        'lastName': lastName,
-      },
-      conflictAlgorithm: ConflictAlgorithm.replace,
+      user,
+      where: 'id = ?',
+      whereArgs: [user['id']],
     );
+  }
+
+  Future<int> deleteUser(int id) async {
+    final db = await database;
+    return await db.delete(
+      'users',
+      where: 'id = ?',
+      whereArgs: [id],
+    );
+  }
+
+  Future<List<Map<String, dynamic>>> getAllUsers() async {
+    final db = await database;
+    return await db.query('users');
+  }
+
+  Future<Map<String, dynamic>?> getUserById(int id) async {
+    final db = await database;
+    final result = await db.query(
+      'users',
+      where: 'id = ?',
+      whereArgs: [id],
+    );
+    return result.isNotEmpty ? result.first : null;
+  }
+
+  Future<bool> validateCredentials(String email, String password) async {
+    final db = await database;
+    final result = await db.query(
+      'users',
+      where: 'email = ? AND password = ?',
+      whereArgs: [email, password],
+    );
+    print(result);
+    return result.isNotEmpty;
   }
 }

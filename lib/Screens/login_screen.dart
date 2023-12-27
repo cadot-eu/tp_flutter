@@ -1,14 +1,19 @@
 import 'package:flutter/material.dart';
 import 'package:tp/gen/assets.gen.dart';
+import 'package:tp/helpers/database_helper.dart';
 
 import '../styles/login.dart';
 import 'app_bar_widget.dart';
-import 'register_screen.dart';
 
 class LoginScreen extends StatelessWidget {
   const LoginScreen({super.key});
+
   @override
   Widget build(BuildContext context) {
+    final emailController = TextEditingController();
+    final passwordController = TextEditingController();
+    final db = DatabaseHelper();
+    const successMessage = 'Logged in successfully';
     return Scaffold(
       appBar: const AppBarWidget(),
       body: Container(
@@ -36,6 +41,7 @@ class LoginScreen extends StatelessWidget {
                           style: titreStyle,
                         ),
                         TextFormField(
+                          controller: emailController,
                           decoration: const InputDecoration(
                             border: UnderlineInputBorder(),
                             labelText: 'Email',
@@ -43,6 +49,7 @@ class LoginScreen extends StatelessWidget {
                           ),
                         ),
                         TextFormField(
+                          controller: passwordController,
                           decoration: const InputDecoration(
                             border: UnderlineInputBorder(),
                             labelText: 'Password',
@@ -54,18 +61,37 @@ class LoginScreen extends StatelessWidget {
                           child: Column(
                             children: [
                               ElevatedButton(
-                                onPressed: () {},
+                                onPressed: () {
+                                  String email = emailController.text;
+                                  String password = passwordController.text;
+
+                                  BuildContext scaffoldContext = context;
+
+                                  db
+                                      .validateCredentials(email, password)
+                                      .then((isValid) {
+                                    if (isValid) {
+                                      const snackBar = SnackBar(
+                                        content: Text(successMessage),
+                                      );
+                                      ScaffoldMessenger.of(scaffoldContext)
+                                          .showSnackBar(snackBar);
+                                    } else {
+                                      const snackBar = SnackBar(
+                                        content:
+                                            Text('Identifiants incorrects'),
+                                      );
+                                      ScaffoldMessenger.of(scaffoldContext)
+                                          .showSnackBar(snackBar);
+                                    }
+                                  });
+                                },
                                 child: const Text('Login'),
                               ),
                               const Divider(),
                               GestureDetector(
                                 onTap: () {
-                                  Navigator.push(
-                                      context,
-                                      MaterialPageRoute(
-                                        builder: (context) =>
-                                            const RegisterScreen(),
-                                      ));
+                                  Navigator.pushNamed(context, '/register');
                                 },
                                 child: const Text('Register'),
                               ),

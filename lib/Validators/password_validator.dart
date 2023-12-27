@@ -9,11 +9,12 @@ class PasswordValidator {
         repeatPassword.isEmpty) {
       return notempty;
     }
-//on vérifie que le mot de passe >8 caractères etqu'il contient au moins une lettre et un nombre
+// 8 characters and one letter and one number
     bool isValidPassword = password.isPasswordNormal1();
     if (!isValidPassword) {
       return passwordHint;
     }
+//match
     if (password == repeatPassword) {
       return true;
     } else {

@@ -5,7 +5,7 @@ class NameValidator {
     if (name == null || name.isEmpty) {
       return fieldHint;
     }
-    if (name.length < 3) {
+    if (name.length > 3) {
       return true;
     } else {
       return 'The field is too short';

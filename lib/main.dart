@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:tp/Screens/login_screen.dart';
 import 'package:tp/Screens/register_screen.dart';
-import 'package:tp/gen/assets.gen.dart';
-import 'Screens/login_screen.dart';
 
 void main() {
   runApp(const MyApp());
@@ -9,14 +8,19 @@ void main() {
 
 class MyApp extends StatelessWidget {
   const MyApp({super.key});
+
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
-        debugShowCheckedModeBanner: false,
-        title: 'Flutter Demo',
-        theme: ThemeData(
-            primarySwatch: Colors.blue,
-            visualDensity: VisualDensity.adaptivePlatformDensity),
-        home: const LoginScreen());
+      title: 'Your App',
+      theme: ThemeData(
+        primarySwatch: Colors.blue,
+      ),
+      initialRoute: '/',
+      routes: {
+        '/': (context) => const LoginScreen(),
+        '/register': (context) => const RegisterScreen(),
+      },
+    );
   }
 }
