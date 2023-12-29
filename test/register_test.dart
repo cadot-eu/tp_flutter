@@ -120,6 +120,7 @@ void main() {
       expect(find.text(emailHint), findsNothing);
       expect(find.text(fieldHint), findsNothing);
       expect(find.text(notmatch), findsNothing);
+      await screenMatchesGolden(tester, 'valid');
       //TODO: test sqlite make a error
     });
   });
