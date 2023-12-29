@@ -1,0 +1,13 @@
+{
+email letsencrypt@cadot.eu
+acme_ca https://acme-staging-v02.api.letsencrypt.org/directory
+}
+
+tp.localhost {
+encode gzip zstd
+reverse_proxy localhost:32771 
+header {
+Cache-Control public, max-age=31536000
+}
+}
+

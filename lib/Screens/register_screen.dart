@@ -11,6 +11,7 @@ import '../helpers/database_helper.dart';
 import '../styles/login.dart';
 import '../texts.dart';
 import 'decorations/field_decoration.dart';
+import 'package:cool_alert/cool_alert.dart';
 
 class RegisterScreen extends StatefulWidget {
   const RegisterScreen({super.key});
@@ -21,17 +22,17 @@ class RegisterScreen extends StatefulWidget {
 
 class _RegisterScreenState extends State<RegisterScreen> {
   final _formKey = GlobalKey<FormState>();
-  final _emailController = TextEditingController(text: 'a@cadot.eu');
-  final _passwordController = TextEditingController(text: 'aaaaaaaa1');
-  final _repeatpasswordController = TextEditingController(text: 'aaaaaaaa1');
-  final _firstNameController = TextEditingController(text: 'John');
-  final _lastNameController = TextEditingController(text: 'Doedoe');
+  final _emailController = TextEditingController();
+  final _passwordController = TextEditingController();
+  final _repeatpasswordController = TextEditingController();
+  final _firstNameController = TextEditingController();
+  final _lastNameController = TextEditingController();
 
   Icon? suffixicon;
 
   final errorIcon = const Icon(Icons.error);
   final doneIcon = const Icon(Icons.done);
-
+  final db = DatabaseHelper();
   static const String _successMessage = 'Registered successfully';
   static const String _errorMessage = 'Error creating account';
 
@@ -179,33 +180,39 @@ class _RegisterScreenState extends State<RegisterScreen> {
                   ElevatedButton(
                     onPressed: () {
                       if (_formKey.currentState!.validate()) {
-                        final db = DatabaseHelper();
                         final user = {
                           'email': _emailController.text,
                           'password': _passwordController.text,
                           'firstName': _firstNameController.text,
                           'lastName': _lastNameController.text
                         };
-                        db.insertUser(user).then((id) async {
-                          // L'opération d'insertion a réussi
-                          const snackBar = SnackBar(
-                            content: Text(_successMessage),
-                          );
-                          ScaffoldMessenger.of(context).showSnackBar(snackBar);
-                          await Future.delayed(const Duration(seconds: 2));
-                          //redirect to login
-                          Navigator.push(
-                            context,
-                            MaterialPageRoute(
-                              builder: (context) => const LoginScreen(),
-                            ),
+                        db.insertUser(user).then((id) {
+                          CoolAlert.show(
+                            context: context,
+                            type: CoolAlertType.success,
+                            title: 'Success',
+                            text: _successMessage,
+                            confirmBtnText: 'OK',
+                            onConfirmBtnTap: () {
+                              // Rediriger vers l'écran de connexion
+                              Navigator.pushReplacement(
+                                context,
+                                MaterialPageRoute(
+                                  builder: (context) => const LoginScreen(),
+                                ),
+                              );
+                              Navigator.pop(context);
+                            },
                           );
                         }).catchError((error) {
-                          // Une erreur s'est produite lors de l'insertion
-                          const snackBar = SnackBar(
-                            content: Text(_errorMessage),
+                          print(error);
+                          CoolAlert.show(
+                            context: context,
+                            type: CoolAlertType.error,
+                            title: 'Error',
+                            text: _errorMessage,
+                            confirmBtnText: 'OK',
                           );
-                          ScaffoldMessenger.of(context).showSnackBar(snackBar);
                         });
                       }
                     },

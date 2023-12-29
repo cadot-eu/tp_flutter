@@ -1,3 +1,4 @@
+import 'package:flutter/foundation.dart';
 import 'package:path/path.dart';
 import 'package:sqflite/sqflite.dart';
 
@@ -73,7 +74,9 @@ class DatabaseHelper {
       where: 'email = ? AND password = ?',
       whereArgs: [email, password],
     );
-    print(result);
+    if (kDebugMode) {
+      print(result);
+    }
     return result.isNotEmpty;
   }
 }

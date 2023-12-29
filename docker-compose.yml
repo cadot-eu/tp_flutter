@@ -1,0 +1,11 @@
+version: '3'
+services:
+  tp:
+    image: cadoteu/symfony5-6-runsite
+    container_name: tp
+    volumes:
+      - .:/app
+    restart: always
+    ports:
+      - 80
+ 

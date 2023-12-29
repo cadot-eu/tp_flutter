@@ -39,6 +39,7 @@ dependencies:
   regexpattern: ^2.5.0
   golden_toolkit: ^0.15.0
   sqflite_common_ffi: ^2.3.0+4
+  cool_alert: ^2.0.1
 
 dev_dependencies:
   flutter_test:
